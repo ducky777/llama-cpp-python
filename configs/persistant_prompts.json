@@ -1,0 +1,6 @@
+[
+    {
+        "name": "FWD_Customer",
+        "prompt":"configs/fwd_customer.txt"
+    }
+]

@@ -1,25 +1,10 @@
-.python-version
-
-.vscode/
-
-_skbuild/
-
-.envrc
-.direnv
-
-models/
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 
 # C extensions
-llama_cpp/*.so
-llama_cpp/*.dylib
-llama_cpp/*.metal
-llama_cpp/*.dll
-llama_cpp/*.lib
+*.so
 
 # Distribution / packaging
 .Python
@@ -172,7 +157,7 @@ cython_debug/
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-.idea/
+#.idea/
 
-# downloaded model .bin files
-docker/open_llama/*.bin
+data
+.DS_Store

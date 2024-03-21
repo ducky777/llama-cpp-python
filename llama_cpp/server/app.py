@@ -28,7 +28,6 @@ from starlette_context.middleware import RawContextMiddleware
 import numpy as np
 import numpy.typing as npt
 
-
 # Disable warning for model and model_alias settings
 BaseSettings.model_config["protected_namespaces"] = ()
 
@@ -161,6 +160,12 @@ class Settings(BaseSettings):
         default=True,
         description="Whether to interrupt requests when a new request is received.",
     )
+    
+    to_eval: bool = Field(
+        default=False,
+        description="Whether to run eval only",
+    )
+    
 
 
 class ErrorResponse(TypedDict):
@@ -357,6 +362,10 @@ def create_app(settings: Optional[Settings] = None):
     if settings is None:
         settings = Settings()
 
+    # settings.n_batch = 4096
+    # settings.n_ctx = 32000
+    # settings.last_n_tokens_size = 8000
+
     middleware = [
         Middleware(RawContextMiddleware, plugins=(plugins.RequestIdPlugin(),))
     ]
@@ -384,46 +393,70 @@ def create_app(settings: Optional[Settings] = None):
         )
     ##
 
-    llama = llama_cpp.Llama(
+    # with open("configs/rude.txt", "r") as f:
+    #     fwd_customer_prompt = f.read()
+
+    # persistant_prompts = [
+    #     llama_cpp.STATE_PROMPTS(
+    #         name="FWD_Customer",
+    #         prompt=llama_cpp.RUDE_SOLAR_INSTRUCT,
+    #         stop_tokens=["</s>", "Agent:", "You:"],
+    #     ),
+    # ]
+
+    # llama = llama_cpp.LlamaPersistantState(
+    #     state_prompts=persistant_prompts,
+    #     default_state_name="FWD_Customer",
+    #     model_path=settings.model,
+    #     # Model Params
+    #     n_gpu_layers=settings.n_gpu_layers,
+    #     main_gpu=settings.main_gpu,
+    #     tensor_split=settings.tensor_split,
+    #     vocab_only=settings.vocab_only,
+    #     use_mmap=settings.use_mmap,
+    #     use_mlock=settings.use_mlock,
+    #     # Context Params
+    #     seed=settings.seed,
+    #     n_ctx=settings.n_ctx,
+    #     n_batch=settings.n_batch,
+    #     n_threads=settings.n_threads,
+    #     n_threads_batch=settings.n_threads_batch,
+    #     rope_scaling_type=settings.rope_scaling_type,
+    #     rope_freq_base=settings.rope_freq_base,
+    #     rope_freq_scale=settings.rope_freq_scale,
+    #     yarn_ext_factor=settings.yarn_ext_factor,
+    #     yarn_attn_factor=settings.yarn_attn_factor,
+    #     yarn_beta_fast=settings.yarn_beta_fast,
+    #     yarn_beta_slow=settings.yarn_beta_slow,
+    #     yarn_orig_ctx=settings.yarn_orig_ctx,
+    #     mul_mat_q=settings.mul_mat_q,
+    #     f16_kv=settings.f16_kv,
+    #     logits_all=settings.logits_all,
+    #     embedding=settings.embedding,
+    #     # Sampling Params
+    #     last_n_tokens_size=settings.last_n_tokens_size,
+    #     # LoRA Params
+    #     lora_base=settings.lora_base,
+    #     lora_path=settings.lora_path,
+    #     # Backend Params
+    #     numa=settings.numa,
+    #     # Chat Format Params
+    #     chat_format=settings.chat_format,
+    #     chat_handler=chat_handler,
+    #     # Misc
+    #     verbose=settings.verbose,
+    # )
+
+    llama = llama_cpp.ChatHistoryStrategy(
+        cache_type="ram",
         model_path=settings.model,
-        # Model Params
         n_gpu_layers=settings.n_gpu_layers,
-        main_gpu=settings.main_gpu,
-        tensor_split=settings.tensor_split,
-        vocab_only=settings.vocab_only,
-        use_mmap=settings.use_mmap,
-        use_mlock=settings.use_mlock,
-        # Context Params
-        seed=settings.seed,
         n_ctx=settings.n_ctx,
         n_batch=settings.n_batch,
-        n_threads=settings.n_threads,
-        n_threads_batch=settings.n_threads_batch,
-        rope_scaling_type=settings.rope_scaling_type,
-        rope_freq_base=settings.rope_freq_base,
-        rope_freq_scale=settings.rope_freq_scale,
-        yarn_ext_factor=settings.yarn_ext_factor,
-        yarn_attn_factor=settings.yarn_attn_factor,
-        yarn_beta_fast=settings.yarn_beta_fast,
-        yarn_beta_slow=settings.yarn_beta_slow,
-        yarn_orig_ctx=settings.yarn_orig_ctx,
-        mul_mat_q=settings.mul_mat_q,
-        f16_kv=settings.f16_kv,
-        logits_all=settings.logits_all,
-        embedding=settings.embedding,
-        # Sampling Params
         last_n_tokens_size=settings.last_n_tokens_size,
-        # LoRA Params
-        lora_base=settings.lora_base,
-        lora_path=settings.lora_path,
-        # Backend Params
-        numa=settings.numa,
-        # Chat Format Params
-        chat_format=settings.chat_format,
-        chat_handler=chat_handler,
-        # Misc
         verbose=settings.verbose,
     )
+
     if settings.cache:
         if settings.cache_type == "disk":
             if settings.verbose:
@@ -631,13 +664,16 @@ class CreateCompletionRequest(BaseModel):
     mirostat_tau: float = mirostat_tau_field
     mirostat_eta: float = mirostat_eta_field
     grammar: Optional[str] = None
+    
+    to_eval: bool = False
 
     model_config = {
         "json_schema_extra": {
             "examples": [
                 {
-                    "prompt": "\n\n### Instructions:\nWhat is the capital of France?\n\n### Response:\n",
-                    "stop": ["\n", "###"],
+                    "max_tokens": 15,
+                    "prompt": "hi. i'd like to sell you the set for life insurance. have you heard about it?",
+                    "temperature": 0.1,
                 }
             ]
         }
@@ -656,10 +692,7 @@ def _logit_bias_tokens_to_input_ids(
     return to_bias
 
 
-@router.post(
-    "/v1/completions",
-    summary="Completion"
-)
+@router.post("/v1/completions", summary="Completion")
 @router.post("/v1/engines/copilot-codex/completions", include_in_schema=False)
 async def create_completion(
     request: Request,
@@ -733,10 +766,7 @@ class CreateEmbeddingRequest(BaseModel):
     }
 
 
-@router.post(
-    "/v1/embeddings",
-    summary="Embedding"
-)
+@router.post("/v1/embeddings", summary="Embedding")
 async def create_embedding(
     request: CreateEmbeddingRequest, llama: llama_cpp.Llama = Depends(get_llama)
 ):
@@ -804,6 +834,9 @@ class CreateChatCompletionRequest(BaseModel):
     mirostat_tau: float = mirostat_tau_field
     mirostat_eta: float = mirostat_eta_field
     grammar: Optional[str] = None
+    
+    # optimized model
+    to_eval: bool = False
 
     model_config = {
         "json_schema_extra": {
@@ -823,10 +856,7 @@ class CreateChatCompletionRequest(BaseModel):
     }
 
 
-@router.post(
-    "/v1/chat/completions",
-    summary="Chat"
-)
+@router.post("/v1/chat/completions", summary="Chat")
 async def create_chat_completion(
     request: Request,
     body: CreateChatCompletionRequest,
@@ -852,8 +882,7 @@ async def create_chat_completion(
 
     iterator_or_completion: Union[
         llama_cpp.ChatCompletion, Iterator[llama_cpp.ChatCompletionChunk]
-    ] = await run_in_threadpool(llama.create_chat_completion, **kwargs)
-
+    ] = await run_in_threadpool(llama.create_completion_with_cache, **kwargs)
     if isinstance(iterator_or_completion, Iterator):
         # EAFP: It's easier to ask for forgiveness than permission
         first_response = await run_in_threadpool(next, iterator_or_completion)
@@ -890,6 +919,11 @@ class ModelList(TypedDict):
     data: List[ModelData]
 
 
+class StateNames(TypedDict):
+    object: Literal["list"]
+    data: List[str]
+
+
 @router.get("/v1/models", summary="Models")
 async def get_models(
     settings: Settings = Depends(get_settings),
@@ -907,4 +941,15 @@ async def get_models(
                 "permissions": [],
             }
         ],
+    }
+
+
+@router.get("/v1/models/state_names", summary="Available State Names")
+async def get_state_names() -> StateNames:
+    assert llama is not None
+    state_names = llama.get_state_names()
+    print(state_names)
+    return {
+        "object": "list",
+        "data": state_names,
     }

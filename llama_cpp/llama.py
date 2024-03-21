@@ -771,7 +771,7 @@ class Llama:
         **kwargs,  # type: ignore
     ):
         """Load a llama.cpp model from `model_path`.
-    
+
         Examples:
             Basic usage
 
@@ -1364,6 +1364,7 @@ class Llama:
         logits_processor: Optional[LogitsProcessorList] = None,
         grammar: Optional[LlamaGrammar] = None,
         logit_bias: Optional[Dict[str, float]] = None,
+        default_state: Optional[LlamaState] = None,
     ) -> Union[
         Iterator[CreateCompletionResponse], Iterator[CreateCompletionStreamResponse]
     ]:
@@ -1443,28 +1444,31 @@ class Llama:
                 "logprobs is not supported for models created with logits_all=False"
             )
 
-        if self.cache:
-            try:
-                cache_item = self.cache[prompt_tokens]
-                cache_prefix_len = Llama.longest_token_prefix(
-                    cache_item.input_ids.tolist(), prompt_tokens
-                )
-                eval_prefix_len = Llama.longest_token_prefix(
-                    self._input_ids.tolist(), prompt_tokens
-                )
-                if cache_prefix_len > eval_prefix_len:
-                    self.load_state(cache_item)
-                    if self.verbose:
-                        print("Llama._create_completion: cache hit", file=sys.stderr)
-            except KeyError:
-                if self.verbose:
-                    print("Llama._create_completion: cache miss", file=sys.stderr)
+        # if self.cache:
+        #     try:
+        #         cache_item = self.cache[prompt_tokens]
+        #         cache_prefix_len = Llama.longest_token_prefix(
+        #             cache_item.input_ids.tolist(), prompt_tokens
+        #         )
+        #         eval_prefix_len = Llama.longest_token_prefix(
+        #             self._input_ids.tolist(), prompt_tokens
+        #         )
+        #         if cache_prefix_len > eval_prefix_len:
+        #             self.load_state(cache_item)
+        #             if self.verbose:
+        #                 print("Llama._create_completion: cache hit", file=sys.stderr)
+        #     except KeyError:
+        #         if self.verbose:
+        #             print("Llama._create_completion: cache miss", file=sys.stderr)
 
         if seed is not None:
             self._ctx.set_rng_seed(seed)
 
         finish_reason = "length"
         multibyte_fix = 0
+
+        # reset = False if state else True
+
         for token in self.generate(
             prompt_tokens,
             top_k=top_k,
@@ -1482,6 +1486,7 @@ class Llama:
             stopping_criteria=stopping_criteria,
             logits_processor=logits_processor,
             grammar=grammar,
+            reset=False, # reset is managed by PersistantStateManager
         ):
             if token == self._token_eos:
                 text = self.detokenize(completion_tokens)
@@ -1743,17 +1748,28 @@ class Llama:
                     }
                 ],
             }
-            if self.cache:
-                if self.verbose:
-                    print("Llama._create_completion: cache save", file=sys.stderr)
-                self.cache[prompt_tokens + completion_tokens] = self.save_state()
-                print("Llama._create_completion: cache saved", file=sys.stderr)
+            # if self.cache:
+            #     if self.verbose:
+            #         print("Llama._create_completion: cache save", file=sys.stderr)
+            #     self.cache[prompt_tokens + completion_tokens] = self.save_state()
+            #     print("Llama._create_completion: cache saved", file=sys.stderr)
+
+            # if default_state:
+            #     self.reset()
+            #     self.load_state(default_state)
+            #     print("Llama._create_completion: default state loaded", file=sys.stderr)
+            # else:
+            #     self.reset()
+            #     print("Llama._create_completion: no default state specified. State reset.", file=sys.stderr)
+
+            self.reset()
+
             return
 
-        if self.cache:
-            if self.verbose:
-                print("Llama._create_completion: cache save", file=sys.stderr)
-            self.cache[prompt_tokens + completion_tokens] = self.save_state()
+        # if self.cache:
+        #     if self.verbose:
+        #         print("Llama._create_completion: cache save", file=sys.stderr)
+        #     self.cache[prompt_tokens + completion_tokens] = self.save_state()
 
         text_str = text.decode("utf-8", errors="ignore")
 
@@ -1838,6 +1854,13 @@ class Llama:
             },
         }
 
+        # if default_state:
+        #     self.load_state(default_state)
+        #     print("Llama._create_completion: default state loaded", file=sys.stderr)
+        # else:
+        #     self.reset()
+        #     print("Llama._create_completion: no default state specified. State reset.", file=sys.stderr)
+
     def create_completion(
         self,
         prompt: Union[str, List[int]],
@@ -1865,6 +1888,8 @@ class Llama:
         logits_processor: Optional[LogitsProcessorList] = None,
         grammar: Optional[LlamaGrammar] = None,
         logit_bias: Optional[Dict[str, float]] = None,
+        default_state: Optional[LlamaState] = None,
+        **kwargs,
     ) -> Union[CreateCompletionResponse, Iterator[CreateCompletionStreamResponse]]:
         """Generate text from a prompt.
 
@@ -1928,6 +1953,7 @@ class Llama:
             logits_processor=logits_processor,
             grammar=grammar,
             logit_bias=logit_bias,
+            default_state=default_state,
         )
         if stream:
             chunks: Iterator[CreateCompletionStreamResponse] = completion_or_chunks
@@ -2211,15 +2237,19 @@ class Llama:
 
     def save_state(self) -> LlamaState:
         assert self._ctx.ctx is not None
+        
         if self.verbose:
             print("Llama.save_state: saving llama state", file=sys.stderr)
         state_size = llama_cpp.llama_get_state_size(self._ctx.ctx)
+        
         if self.verbose:
             print(f"Llama.save_state: got state size: {state_size}", file=sys.stderr)
         llama_state = (llama_cpp.c_uint8 * int(state_size))()
+        
         if self.verbose:
             print("Llama.save_state: allocated state", file=sys.stderr)
         n_bytes = llama_cpp.llama_copy_state_data(self._ctx.ctx, llama_state)
+        
         if self.verbose:
             print(f"Llama.save_state: copied llama state: {n_bytes}", file=sys.stderr)
         if int(n_bytes) > int(state_size):
