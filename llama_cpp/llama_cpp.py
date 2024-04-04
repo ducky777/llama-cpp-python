@@ -5,7 +5,7 @@ import functools
 import os
 import pathlib
 import sys
-from ctypes import Structure, c_float, c_int, c_int32, c_int64, c_void_p, POINTER, c_char_p
+from ctypes import Structure, c_float, c_int, POINTER, c_char_p
 from typing import (TYPE_CHECKING, Any, Callable, Generic, List, NewType,
                     Optional, TypeVar, Union)
 
