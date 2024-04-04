@@ -6,6 +6,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/llama-cpp-python)](https://pypi.org/project/llama-cpp-python/)
 [![PyPI - License](https://img.shields.io/pypi/l/llama-cpp-python)](https://pypi.org/project/llama-cpp-python/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/llama-cpp-python)](https://pypi.org/project/llama-cpp-python/)
+[![Github All Releases](https://img.shields.io/github/downloads/abetlen/llama-cpp-python/total.svg?label=Github%20Downloads)]()
 
 Simple Python bindings for **@ggerganov's** [`llama.cpp`](https://github.com/ggerganov/llama.cpp) library.
 This package provides:
@@ -42,6 +43,15 @@ pip install llama-cpp-python
 This will also build `llama.cpp` from source and install it alongside this python package.
 
 If this fails, add `--verbose` to the `pip install` see the full cmake build log.
+
+**Pre-built Wheel (New)**
+
+It is also possible to install a pre-built wheel with basic CPU support.
+
+```bash
+pip install llama-cpp-python \
+  --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+```
 
 ### Installation Configuration
 
@@ -101,10 +111,34 @@ CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS" pip install llama-cpp-
 <details>
 <summary>cuBLAS (CUDA)</summary>
 
-To install with cuBLAS, set the `LLAMA_CUBLAS=on` environment variable before installing:
+To install with cuBLAS, set the `LLAMA_CUDA=on` environment variable before installing:
 
 ```bash
-CMAKE_ARGS="-DLLAMA_CUBLAS=on" pip install llama-cpp-python
+CMAKE_ARGS="-DLLAMA_CUDA=on" pip install llama-cpp-python
+```
+
+**Pre-built Wheel (New)**
+
+It is also possible to install a pre-built wheel with CUDA support. As long as your system meets some requirements:
+
+- CUDA Version is 12.1, 12.2 or 12.3
+- Python Version is 3.10, 3.11 or 3.12
+
+```bash
+pip install llama-cpp-python \
+  --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/<cuda-version>
+```
+
+Where `<cuda-version>` is one of the following:
+- `cu121`: CUDA 12.1
+- `cu122`: CUDA 12.2
+- `cu123`: CUDA 12.3
+
+For example, to install the CUDA 12.1 wheel:
+
+```bash
+pip install llama-cpp-python \
+  --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu121
 ```
 
 </details>
@@ -116,6 +150,18 @@ To install with Metal (MPS), set the `LLAMA_METAL=on` environment variable befor
 
 ```bash
 CMAKE_ARGS="-DLLAMA_METAL=on" pip install llama-cpp-python
+```
+
+**Pre-built Wheel (New)**
+
+It is also possible to install a pre-built wheel with Metal support. As long as your system meets some requirements:
+
+- MacOS Version is 11.0 or later
+- Python Version is 3.10, 3.11 or 3.12
+
+```bash
+pip install llama-cpp-python \
+  --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/metal
 ```
 
 </details>
@@ -321,7 +367,7 @@ For OpenAI API v1 compatibility, you use the [`create_chat_completion_openai_v1`
 
 ### JSON and JSON Schema Mode
 
-To constrain chat responses to only valid JSON or a specific JSON Schema use the `response_format` argument in [`create_chat_completion`](http://localhost:8000/api-reference/#llama_cpp.Llama.create_chat_completion).
+To constrain chat responses to only valid JSON or a specific JSON Schema use the `response_format` argument in [`create_chat_completion`](https://llama-cpp-python.readthedocs.io/en/latest/api-reference/#llama_cpp.Llama.create_chat_completion).
 
 #### JSON Mode
 
@@ -529,7 +575,7 @@ llama = Llama(
 
 ### Embeddings
 
-To generate text embeddings use [`create_embedding`](http://localhost:8000/api-reference/#llama_cpp.Llama.create_embedding).
+To generate text embeddings use [`create_embedding`](https://llama-cpp-python.readthedocs.io/en/latest/api-reference/#llama_cpp.Llama.create_embedding).
 
 ```python
 import llama_cpp
@@ -568,7 +614,7 @@ python3 -m llama_cpp.server --model models/7B/llama-model.gguf
 Similar to Hardware Acceleration section above, you can also install with GPU (cuBLAS) support like this:
 
 ```bash
-CMAKE_ARGS="-DLLAMA_CUBLAS=on" FORCE_CMAKE=1 pip install 'llama-cpp-python[server]'
+CMAKE_ARGS="-DLLAMA_CUDA=on" FORCE_CMAKE=1 pip install 'llama-cpp-python[server]'
 python3 -m llama_cpp.server --model models/7B/llama-model.gguf --n_gpu_layers 35
 ```
 

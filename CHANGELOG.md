@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.59]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@ba0c7c70ab5b15f1f2be7fb0dfbe0366dda30d6c
+- feat: Binary wheels for CPU, CUDA (12.1 - 12.3), Metal by @abetlen, @jllllll, and @oobabooga in #1247
+- fix: segfault when logits_all=False by @abetlen in 8649d7671bd1a7c0d9cc6a5ad91c6ca286512ab3
+- fix: last tokens passing to sample_repetition_penalties function by @ymikhailov in #1295
+
+## [0.2.58]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@ba0c7c70ab5b15f1f2be7fb0dfbe0366dda30d6c
+- feat: add support for KV cache quantization options by @Limour-dev in #1307
+- feat: Add logprobs support to chat completions by @windspirit95 in #1311
+- fix: set LLAMA_METAL_EMBED_LIBRARY=on on MacOS arm64 by @bretello in #1289
+- feat: Add tools/functions variables to Jinja2ChatFormatter, add function response formatting for all simple chat formats by @CISC in #1273
+- fix: Changed local API doc references to hosted by by @lawfordp2017 in #1317
+
 ## [0.2.57]
 
 - feat: Update llama.cpp to ggerganov/llama.cpp@ac9ee6a4ad740bc1ee484ede43e9f92b5af244c1
@@ -24,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.55]
 
-- feat: Update llama.cpp to ggerganov/9731134296af3a6839cd682e51d9c2109a871de5
+- feat: Update llama.cpp to ggerganov/llama.cpp@9731134296af3a6839cd682e51d9c2109a871de5
 - docs: fix small typo in README: 'model know how' -> 'model knows how' by @boegel in #1244
 
 ## [0.2.54]
