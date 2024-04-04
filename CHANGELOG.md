@@ -7,6 +7,231 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.57]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@ac9ee6a4ad740bc1ee484ede43e9f92b5af244c1
+- fix: set default embedding pooling type to unspecified by @abetlen in 4084aabe867b8ec2aba1b22659e59c9318b0d1f3
+- fix: Fix and optimize functionary chat handler by @jeffrey-fong in #1282
+- fix: json mode for basic chat formats by @abetlen in 20e6815252d0efd9f015f7adbf108faaf36e3f3c
+
+## [0.2.56]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@c2101a2e909ac7c08976d414e64e96c90ee5fa9e
+- feat(server): Add endpoints for tokenize, detokenize and count tokens by @felipelo in #1136
+- feat: Switch embed to llama_get_embeddings_seq by @iamlemec in #1263
+- fix: Fixed json strings grammar by blacklisting character control set by @ExtReMLapin in d02a9cf16ff88ad011e2eb1ce29f4d9400f13cd1
+- fix: Check for existence of clip model path by @kejcao in #1264
+
+## [0.2.55]
+
+- feat: Update llama.cpp to ggerganov/9731134296af3a6839cd682e51d9c2109a871de5
+- docs: fix small typo in README: 'model know how' -> 'model knows how' by @boegel in #1244
+
+## [0.2.54]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@cb49e0f8c906e5da49e9f6d64a57742a9a241c6a
+- docs: fix typo in README.md embeddings example by @iamlemec in #1232
+
+## [0.2.53]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@cb49e0f8c906e5da49e9f6d64a57742a9a241c6a
+- fix: eos/bos_token set correctly for Jinja2ChatFormatter and automatic chat formatter by @CISC in #1230
+
+## [0.2.52]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@a33e6a0d2a66104ea9a906bdbf8a94d050189d91
+- fix: Llava15ChatHandler (this function takes at least 4 arguments) by @abetlen in 8383a9e5620f5df5a88f62da16813eac200dd706
+
+## [0.2.51]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@c39373398803c669056304090050fe3f44b41bf9
+- fix: Restore type hints for low-level api by @abetlen in 19234aa0dbd0c3c87656e65dd2b064665371925b
+
+## [0.2.50]
+
+- docs: Update Functionary OpenAI Server Readme by @jeffrey-fong in #1193
+- fix: LlamaHFTokenizer now receives pre_tokens by @abetlen in 47bad30dd716443652275099fa3851811168ff4a
+
+## [0.2.49]
+
+- fix: module 'llama_cpp.llama_cpp' has no attribute 'c_uint8' in Llama.save_state by @abetlen in db776a885cd4c20811f22f8bd1a27ecc71dba927
+- feat: Auto detect Mixtral's slightly different format by @lukestanley in #1214
+
+## [0.2.48]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@15499eb94227401bdc8875da6eb85c15d37068f7
+- feat: Add Google's Gemma formatting via chat_format="gemma" by @alvarobartt in #1210
+- feat: support minItems/maxItems in JSON grammar converter by @nopperl in 3921e10770996d95a9eb22c8248bacef39f69365
+- fix: Update from_pretrained defaults to match hf_hub_download and pull to local cache folder by @abetlen in e6d6260a91b7831733f7d1f73c7af46a3e8185ed
+- fix: Raise exceptions when llama model or context fails to load by @abetlen in dd22010e85265ae840c76ec835d67a29ed852722
+- docs: Update README.md to fix pip install llama cpp server by @audip in #1187
+
+## [0.2.47]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@973053d8b0d04809836b3339a50f68d9c842de90
+
+## [0.2.46]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@ba2135ccae7462470b3865c6e41d2e1d734eac05
+- feat: Pull models directly from huggingface by @abetlen in #1206
+- feat(low-level-api): Improve API static type-safety and performance. Low level api functions are positional args only now. by @abetlen in #1205
+
+## [0.2.45]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@89febfed9322c8849520dc63c93ee4f5fd72556e
+
+## [0.2.44]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@4524290e87b8e107cc2b56e1251751546f4b9051
+- fix: create_embedding broken response for input type str by @abetlen in 0ce66bc080fe537590b05b24bf442480bf2dd045
+- fix: Use '\n' seperator for EventSourceResponse by @khimaros in #1188
+- fix: Incorporate embedding pooling layer fixes by @iamlemec in #1194
+
+## [0.2.43]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@8084d554406b767d36b3250b3b787462d5dd626f
+- feat: Support batch embeddings by @iamlemec in #1186
+- fix: submodule kompute is not included in sdist by @abetlen in 7dbbfdecadebe7750be650d9409959640ff9a460
+- fix: fix: Update openbuddy prompt format by @abetlen in 07a783779a62a4aac0b11161c7e0eb983ff215f8
+
+## [0.2.42]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@ea9c8e11436ad50719987fa23a289c74b7b40d40
+- fix: sample idx off-by-one error for logit_processors by @lapp0 in #1179
+- fix: chat formatting bugs in `chatml-function-calling` by @abetlen in 4b0e3320bd8c2c209e29978d0b21e2e471cc9ee3 and 68fb71b6a26a1e57331868f959b47ab4b87851e1
+
+## [0.2.41]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@895407f31b358e3d9335e847d13f033491ec8a5b
+- fix: Don't change order of json schema object properties in generated grammar unless prop_order is passed by @abetlen in d1822fed6b706f38bd1ff0de4dec5baaa3cf84fa
+
+## [0.2.40]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@3bdc4cd0f595a6096cca4a64aa75ffa8a3503465
+- feat: Generic chatml Function Calling using chat_format="chatml-function-calling"` by @abetlen in #957
+- fix: Circular dependancy preventing early Llama object free by @notwa in #1176
+- docs: Set the correct command for compiling with syscl support by @akarshanbiswas in #1172
+- feat: use gpu backend for clip if available by @iamlemec in #1175
+
+## [0.2.39]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@b08f22c882a1443e6b97081f3ce718a4d1a741f8
+- fix: Fix destructor logging bugs by using llama_log_callback to avoid suppress_stdout_stderr by @abetlen in 59760c85eddc72dfcc1839f43760ef72c23d6874
+
+## [0.2.38]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@1cfb5372cf5707c8ec6dde7c874f4a44a6c4c915
+- feat: Add speculative decoding by @abetlen in #1120
+- fix: Pass raise_exception and add_generation_prompt to jinja2 chat template by @abetlen in 078cca0361bf5a94d2cf52ed04980d20e32d6f95
+
+## [0.2.37]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@fea4fd4ba7f6b754ac795387b275e1a014a77bde
+- feat: Automatically set chat format from gguf by @abetlen in #1110
+
+## [0.2.36]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@2aed77eb06a329f0d82bb1c467f4244904d4073f
+- feat: Add mistral instruct chat format as "mistral-instruct" by @Rafaelblsilva in #799
+
+## [0.2.35]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@d2f650cb5b04ee2726663e79b47da5efe196ce00
+
+## [0.2.34]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@6db2b41a76ee78d5efdd5c3cddd5d7ad3f646855
+- feat: Add json schema mode by @abetlen in #1122
+
+## [0.2.33]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@faa3526a1eba458120987ed8269e5616385a76f4
+- feat(server): include llama-cpp-python version in openapi spec by @abetlen in cde7514c3d28e6d52f272614e9957208c344dde5
+- fix: use both eos and bos tokens as stop sequences for hf-tokenizer-config chat format. by @abetlen in 5b982d0f8c6f35242c8862ffdce00e17cea0b44f
+- fix: GGUF metadata KV overrides, re #1011 by @phiharri in #1116
+- fix: llama_log_set should be able to accept null pointer by @abetlen in c970d41a85381fd55235136f123422df0bf0c7e7
+
+## [0.2.32]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@504dc37be8446fb09b1ede70300250ad41be32a2
+- fix: from_json_schema oneof/anyof bug by @jndiogo in d3f5528ca8bcb9d69d4f27e21631e911f1fb9bfe
+- fix: pass chat handler not chat formatter for huggingface autotokenizer and tokenizer_config formats by @abetlen in 24f39454e91cf5dddbc4b6041aead4accc7c7a2d
+- feat: Add add_generation_prompt option for jinja2chatformatter by @abetlen in 7f3209b1eb4ad3260ba063801fab80a8c25a2f4c
+- feat: Add Jinja2ChatFormatter by @abetlen in be09318c26add8674ce494ae7cc480cce72a4146
+- feat: Expose gguf model metadata in metadata property by @abetlen in 5a34c57e5479e50c99aba9b38218cc48e6560b81
+
+## [0.2.31]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@a5cacb22b2114fd9adf61c00cbb237384d86bced
+- fix: Mirostat sampling now passes correct type to ctypes and tracks state during generation by @abetlen in 3babe3512cb95743108f2b595210c38ed6f1b904
+- fix: Python3.8 support in server by @abetlen in 141293a75b564a8699e0acba1da24d9aa1cf0ab1
+
+## [0.2.30]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@57e2a7a52a819883f40dada8a2edc24ecf48186b
+- feat(server): Add ability to load chat format from huggingface autotokenizer or tokenizer_config.json files by @abetlen in b8fc1c7d83ad4a9207c707ba1d954fe580286a01
+- feat: Integration of Jinja2 Templating for chat formats by @teleprint-me in #875
+- fix: Offload KQV by default by @abetlen in 48c3b77e6f558a9899de0e1155c7dc0c7958d8e8
+- fix: Support Accept text/event-stream in chat and completion endpoints, resolves #1083 by @aniljava in #1088
+- fix(cli): allow passing n_ctx=0 to openAI API server args to use model n_ctx_train field per #1015 by @K-Mistele in #1093
+
+## [0.2.29]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@4483396751c79dea540808b9cb9238245d06da2b
+- feat: Add split_mode option by @abetlen in 84615adbc6855c8384807c42f0130f9a1763f99d
+- feat: Implement GGUF metadata KV overrides by @phiharri in #1011
+- fix: Avoid "LookupError: unknown encoding: ascii" when open() called in a destructor by @yieldthought in #1012
+- fix: Fix low_level_api_chat_cpp example to match current API by @aniljava in #1086
+- fix: Fix Pydantic model parsing by @DeNeutoy in #1087
+
+## [0.2.28]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@6efb8eb30e7025b168f3fda3ff83b9b386428ad6
+- feat: Add ability to pass in penalize_nl param by @shankinson in #1068
+- fix: print_grammar to stderr by @turian in #1052
+
+## [0.2.27]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@b3a7c20b5c035250257d2b62851c379b159c899a
+- feat: Add `saiga` chat format by @femoiseev in #1050
+- feat: Added `chatglm3` chat format by @xaviviro in #1059
+- fix: Correct typo in README.md by @qeleb in (#1058)
+
+## [0.2.26]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@f6793491b5af6da75edad34d6f503ef86d31b09f
+
+## [0.2.25]
+
+- feat(server): Multi model support by @D4ve-R in #931
+- feat(server): Support none defaulting to infinity for completions by @swg in #111
+- feat(server): Implement openai api compatible authentication by @docmeth2 in #1010
+- fix: text_offset of multi-token characters by @twaka in #1037
+- fix: ctypes bindings for kv override by @phiharri in #1011
+- fix: ctypes definitions of llama_kv_cache_view_update and llama_kv_cache_view_free. by @e-c-d in #1028
+
+## [0.2.24]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@0e18b2e7d0b5c0a509ea40098def234b8d4a938a
+- feat: Add offload_kqv option to llama and server by @abetlen in 095c65000642a3cf73055d7428232fb18b73c6f3
+- feat: n_ctx=0 now uses the n_ctx_train of the model by @DanieleMorotti in #1015
+- feat: logits_to_logprobs supports both 2-D and 3-D logits arrays by @kddubey in #1002
+- fix: Remove f16_kv, add offload_kqv fields in low level and llama apis by @brandonrobertz in #1019
+- perf: Don't convert logprobs arrays to lists by @kddubey in #1021
+- docs: Fix README.md functionary demo typo by @evelynmitchell in #996
+- examples: Update low_level_api_llama_cpp.py to match current API by @jsoma in #1023
+
+## [0.2.23]
+
+- Update llama.cpp to ggerganov/llama.cpp@948ff137ec37f1ec74c02905917fa0afc9b97514
+- Add qwen chat format by @yhfgyyf in #1005
+- Add support for running the server with SSL by @rgerganov in #994
+- Replace logits_to_logprobs implementation with numpy equivalent to llama.cpp by @player1537 in #991
+- Fix UnsupportedOperation: fileno in suppress_stdout_stderr by @zocainViken in #961
+- Add Pygmalion chat format by @chiensen in #986
+- README.md multimodal params fix by @zocainViken in #967
+- Fix minor typo in README by @aniketmaurya in #958
+
 ## [0.2.22]
 
 - Update llama.cpp to ggerganov/llama.cpp@8a7b2fa528f130631a5f43648481596ab320ed5a
@@ -103,7 +328,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.11]
 
-- Fix bug in `llama_model_params` object has no attribute `logits_all` by @abetlen in d696251fbe40015e8616ea7a7d7ad5257fd1b896 
+- Fix bug in `llama_model_params` object has no attribute `logits_all` by @abetlen in d696251fbe40015e8616ea7a7d7ad5257fd1b896
 
 ## [0.2.10]
 
@@ -291,7 +516,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.60]
 
-NOTE: This release was deleted due to a bug  with the packaging system that caused pip installations to fail.
+NOTE: This release was deleted due to a bug with the packaging system that caused pip installations to fail.
 
 - Truncate max_tokens in create_completion so requested tokens doesn't exceed context size.
 - Temporarily disable cache for completion requests

@@ -1,6 +1,8 @@
 import ctypes
 
+import numpy as np
 import pytest
+from scipy.special import log_softmax
 
 import llama_cpp
 
@@ -52,7 +54,7 @@ def mock_llama(monkeypatch):
         output_tokens = llama.tokenize(
             output_text.encode("utf-8"), add_bos=True, special=True
         )
-        logits = (llama_cpp.c_float * (n_vocab * n_ctx))(-100.0)
+        logits = (ctypes.c_float * (n_vocab * n_ctx))(-100.0)
         for i in range(n_ctx):
             output_idx = i + 1  # logits for first tokens predict second token
             if output_idx < len(output_tokens):
@@ -88,9 +90,9 @@ def mock_llama(monkeypatch):
             assert n > 0, "mock_llama_decode not called"
             assert last_n_tokens > 0, "mock_llama_decode not called"
             # Return view of logits for last_n_tokens
-            return (llama_cpp.c_float * (last_n_tokens * n_vocab)).from_address(
+            return (ctypes.c_float * (last_n_tokens * n_vocab)).from_address(
                 ctypes.addressof(logits)
-                + (n - last_n_tokens) * n_vocab * ctypes.sizeof(llama_cpp.c_float)
+                + (n - last_n_tokens) * n_vocab * ctypes.sizeof(ctypes.c_float)
             )
 
         monkeypatch.setattr("llama_cpp.llama_cpp.llama_decode", mock_decode)
@@ -130,7 +132,7 @@ def mock_llama(monkeypatch):
             assert ctx == llama._ctx.ctx, "context does not match mock_llama"
             return
 
-        def mock_kv_cache_seq_shift(
+        def mock_kv_cache_seq_add(
             ctx: llama_cpp.llama_context_p,
             seq_id: llama_cpp.llama_seq_id,
             pos0: llama_cpp.llama_pos,
@@ -144,7 +146,7 @@ def mock_llama(monkeypatch):
         monkeypatch.setattr("llama_cpp.llama_cpp.llama_kv_cache_seq_rm", mock_kv_cache_seq_rm)
         monkeypatch.setattr("llama_cpp.llama_cpp.llama_kv_cache_seq_cp", mock_kv_cache_seq_cp)
         monkeypatch.setattr("llama_cpp.llama_cpp.llama_kv_cache_seq_keep", mock_kv_cache_seq_keep)
-        monkeypatch.setattr("llama_cpp.llama_cpp.llama_kv_cache_seq_shift", mock_kv_cache_seq_shift)
+        monkeypatch.setattr("llama_cpp.llama_cpp.llama_kv_cache_seq_add", mock_kv_cache_seq_add)
 
     return setup_mock
 
@@ -262,6 +264,29 @@ def test_llama_server():
             }
         ],
     }
+
+
+@pytest.mark.parametrize(
+    "size_and_axis",
+    [
+        ((32_000,), -1),  # last token's next-token logits
+        ((10, 32_000), -1),  # many tokens' next-token logits, or batch of last tokens
+        ((4, 10, 32_000), -1),  # batch of texts
+    ],
+)
+@pytest.mark.parametrize("convert_to_list", [True, False])
+def test_logits_to_logprobs(size_and_axis, convert_to_list: bool, atol: float = 1e-7):
+    size, axis = size_and_axis
+    logits: np.ndarray = -np.random.uniform(low=0, high=60, size=size)
+    logits = logits.astype(np.single)
+    if convert_to_list:
+        # Currently, logits are converted from arrays to lists. This may change soon
+        logits = logits.tolist()
+    log_probs = llama_cpp.Llama.logits_to_logprobs(logits, axis=axis)
+    log_probs_correct = log_softmax(logits, axis=axis)
+    assert log_probs.dtype == np.single
+    assert log_probs.shape == size
+    assert np.allclose(log_probs, log_probs_correct, atol=atol)
 
 
 def test_llama_cpp_version():

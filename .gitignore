@@ -1,3 +1,16 @@
+*.local
+
+.python-version
+
+.vscode/
+
+_skbuild/
+
+.envrc
+.direnv
+
+models/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

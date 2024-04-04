@@ -5,4 +5,4 @@ from .managers.cache import *
 from .strategies import *
 from .prompts import *
 
-__version__ = "0.2.22"
+__version__ = "0.2.57"
