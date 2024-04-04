@@ -294,11 +294,27 @@ class _LlamaModel:
             self.model,
             lora_path.encode("utf-8"),
             scale,
-            path_base_model.encode("utf-8")
-            if path_base_model is not None
-            else llama_cpp.c_char_p(0),
+            (
+                path_base_model.encode("utf-8")
+                if path_base_model is not None
+                else llama_cpp.c_char_p(0)
+            ),
             n_threads,
         )
+
+    # def load_control_vector(self, strength: float, fname: str):
+    #     return llama_cpp.llama_load_control_vector(load_infos)
+
+    # def apply_control_vector(
+    #     self,
+    #     cvec: Union[List[float], np.ndarray],
+    #     n_embd: int,
+    #     il_start: int,
+    #     il_end: int,
+    # ):
+    #     return llama_cpp.llama_control_vector_apply(
+    #         self.model._ctx, cvec, n_embd, il_start, il_end
+    #     )
 
     # Vocab
 
@@ -1486,7 +1502,7 @@ class Llama:
             stopping_criteria=stopping_criteria,
             logits_processor=logits_processor,
             grammar=grammar,
-            reset=False, # reset is managed by PersistantStateManager
+            reset=False,  # reset is managed by PersistantStateManager
         ):
             if token == self._token_eos:
                 text = self.detokenize(completion_tokens)
@@ -2237,19 +2253,19 @@ class Llama:
 
     def save_state(self) -> LlamaState:
         assert self._ctx.ctx is not None
-        
+
         if self.verbose:
             print("Llama.save_state: saving llama state", file=sys.stderr)
         state_size = llama_cpp.llama_get_state_size(self._ctx.ctx)
-        
+
         if self.verbose:
             print(f"Llama.save_state: got state size: {state_size}", file=sys.stderr)
         llama_state = (llama_cpp.c_uint8 * int(state_size))()
-        
+
         if self.verbose:
             print("Llama.save_state: allocated state", file=sys.stderr)
         n_bytes = llama_cpp.llama_copy_state_data(self._ctx.ctx, llama_state)
-        
+
         if self.verbose:
             print(f"Llama.save_state: copied llama state: {n_bytes}", file=sys.stderr)
         if int(n_bytes) > int(state_size):
