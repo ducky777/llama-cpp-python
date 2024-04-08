@@ -9,7 +9,7 @@ import llama_cpp.llama_speculative as llama_speculative
 import llama_cpp.llama_tokenizer as llama_tokenizer
 
 from llama_cpp.server.settings import ModelSettings
-
+from llama_cpp.managers.cache import LlamaCacheManager
 
 class LlamaProxy:
     def __init__(self, models: List[ModelSettings]) -> None:
@@ -132,7 +132,7 @@ class LlamaProxy:
                 filename=settings.model,
             )
         else:
-            create_fn = llama_cpp.Llama
+            create_fn = LlamaCacheManager
             kwargs["model_path"] = settings.model
 
         _model = create_fn(

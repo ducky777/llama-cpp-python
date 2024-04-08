@@ -1,7 +1,7 @@
-from ..managers.cache import _LlamaCacheManager, CACHE_TYPES
+from ..managers.cache import CACHE_TYPES, LlamaCacheManager
 
 
-class ChatHistoryStrategy(_LlamaCacheManager):
+class ChatHistoryStrategy(LlamaCacheManager):
     """A class for an LLM to always use a specific state with a prompt."""
 
     def __init__(

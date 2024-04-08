@@ -22,7 +22,7 @@ class CACHE_TYPES(BaseModel):
     cache_type: Literal["disk", "ram"]
 
 
-class _LlamaCacheManager(Llama):
+class LlamaCacheManager(Llama):
     """A class for an LLM to always use a specific state with a prompt.
     This should be inherited by a strategy class and not used directly."""
 

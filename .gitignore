@@ -181,3 +181,4 @@ compile_commands.json
 /bin
 cmake_install.cmake
 CMakeCache.txt
+/.fwd_cache
