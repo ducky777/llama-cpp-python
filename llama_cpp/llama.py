@@ -733,9 +733,10 @@ class Llama:
             cvec_data: ControlVectorData = self.control_vectors.get(
                 control_vector, None
             )
-            llama_control_vector_apply(
-                self.ctx, cvec_data.data, cvec_data.length, 4096, 15, 27
-            )
+            if cvec_data is not None:
+                llama_control_vector_apply(
+                    self.ctx, cvec_data.data, cvec_data.length, 4096, 15, 27
+                )
             while sample_idx < self.n_tokens:
                 token = self.sample(
                     top_k=top_k,
