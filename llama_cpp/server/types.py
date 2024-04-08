@@ -146,6 +146,10 @@ class CreateCompletionRequest(BaseModel):
     mirostat_tau: float = mirostat_tau_field
     mirostat_eta: float = mirostat_eta_field
     grammar: Optional[str] = None
+    
+    # others
+    to_eval: Optional[bool] = Field(default=False)
+    control_vector: Optional[str] = Field(default=None)
 
     model_config = {
         "json_schema_extra": {

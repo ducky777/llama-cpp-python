@@ -174,3 +174,10 @@ cython_debug/
 
 data
 .DS_Store
+/CMakeFiles
+llama_cpp/libllava.dylib
+llama_cpp/libllama.dylib
+compile_commands.json
+/bin
+cmake_install.cmake
+CMakeCache.txt

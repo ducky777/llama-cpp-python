@@ -13,7 +13,7 @@ from llama_cpp.server.settings import ModelSettings
 
 class LlamaProxy:
     def __init__(self, models: List[ModelSettings]) -> None:
-        assert len(models) > 0, "No models provided!"
+        assert models, "No models provided!"
 
         self._model_settings_dict: dict[str, ModelSettings] = {}
         for model in models:

@@ -5,9 +5,18 @@ import functools
 import os
 import pathlib
 import sys
-from ctypes import Structure, c_float, c_int, POINTER, c_char_p
-from typing import (TYPE_CHECKING, Any, Callable, Generic, List, NewType,
-                    Optional, TypeVar, Union)
+from ctypes import Structure, c_float, c_int, POINTER, c_char_p, c_void_p, c_bool
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Generic,
+    List,
+    NewType,
+    Optional,
+    TypeVar,
+    Union,
+)
 
 from typing_extensions import TypeAlias
 
@@ -522,7 +531,6 @@ class llama_batch(ctypes.Structure):
 LLAMA_KV_OVERRIDE_TYPE_INT = 0
 LLAMA_KV_OVERRIDE_TYPE_FLOAT = 1
 LLAMA_KV_OVERRIDE_TYPE_BOOL = 2
-
 
 
 # struct llama_model_kv_override {
@@ -1334,6 +1342,37 @@ def llama_control_vector_apply(
     il_start and il_end are the layer range the vector should apply to (both inclusive)
     See llama_control_vector_load in common to load a control vector."""
     ...
+
+
+# class GGUFInitParams(Structure):
+#     _fields_ = [("no_alloc", c_bool), ("ctx", llama_context_p)]
+
+
+# @ctypes_function(
+#     "gguf_init_from_file",
+#     [
+#         c_char_p,  # For the file name
+#         POINTER(GGUFInitParams),  # For the initialization parameters
+#     ],
+#     POINTER(GGUFContext),  # The return type, a pointer to a gguf_context structure
+# )
+# def gguf_init_from_file(
+#     fname: str, params: POINTER(GGUFInitParams)
+# ) -> POINTER(GGUFContext):
+#     """Load a control vector from a file with given parameters"""
+
+
+# @ctypes_function(
+#     "llama_control_vector_load",
+#     [
+#         ctypes.c_float,
+#         ctypes.c_char_p,
+#     ],
+#     [c_int, POINTER(c_float)],
+# )
+# def llama_control_vector_load(strength: float, fname: str) -> tuple[int, POINTER(c_float)]:
+#     """Load a control vector from a file with given strength"""
+#     ...
 
 
 # //
