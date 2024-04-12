@@ -11,6 +11,7 @@ import llama_cpp.llama_tokenizer as llama_tokenizer
 from llama_cpp.server.settings import ModelSettings
 from llama_cpp.managers.cache import LlamaCacheManager
 
+
 class LlamaProxy:
     def __init__(self, models: List[ModelSettings]) -> None:
         assert models, "No models provided!"
@@ -134,6 +135,10 @@ class LlamaProxy:
         else:
             create_fn = LlamaCacheManager
             kwargs["model_path"] = settings.model
+            # kwargs["control_vectors"] = [
+            #     "/Users/sengwee.ngui/Library/CloudStorage/OneDrive-TemusPte.Ltd/Documents/projects/SuperAdapters/hearts_system/hearts_system.json",
+            #     "/Users/sengwee.ngui/Library/CloudStorage/OneDrive-TemusPte.Ltd/Documents/projects/SuperAdapters/hearts_system/hearts_system_critical.json"
+            # ]
 
         _model = create_fn(
             **kwargs,

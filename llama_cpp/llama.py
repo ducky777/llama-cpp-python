@@ -355,16 +355,15 @@ class Llama:
             verbose=self.verbose,
         )
 
-        if self.lora_path:
-            if self._model.apply_lora_from_file(
-                self.lora_path,
-                self.lora_scale,
-                self.lora_base,
-                self.n_threads,
-            ):
-                raise RuntimeError(
-                    f"Failed to apply LoRA from lora path: {self.lora_path} to base path: {self.lora_base}"
-                )
+        if self.lora_path and self._model.apply_lora_from_file(
+            self.lora_path,
+            self.lora_scale,
+            self.lora_base,
+            self.n_threads,
+        ):
+            raise RuntimeError(
+                f"Failed to apply LoRA from lora path: {self.lora_path} to base path: {self.lora_base}"
+            )
 
         if self.verbose:
             print(llama_cpp.llama_print_system_info().decode("utf-8"), file=sys.stderr)
@@ -450,7 +449,7 @@ class Llama:
             if self.verbose:
                 print(f"Using fallback chat format: {chat_format}", file=sys.stderr)
 
-    def _load_control_vector(self, filepath: str, strength: float = 1.9):
+    def _load_control_vector(self, filepath: str, strength: float = 1.7):
         if not os.path.exists(filepath):
             raise ValueError(f"Control vector file does not exist: {filepath}")
         if not filepath.endswith(".json"):

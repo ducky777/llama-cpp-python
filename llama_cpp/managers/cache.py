@@ -77,13 +77,13 @@ class LlamaCacheManager(Llama):
         **kwargs,
     ):
         """Predict the given prompt with the given max tokens and cache the result."""
-        
+
         if not stop_tokens:
             stop_tokens = ["</s>"]
 
         print(prompt)
         prompt = prompt.strip()
-        
+
         if self.current_state == prompt:
             print("Prompt is the same as previous. Assuming new turn")
             # self.reset()
@@ -96,7 +96,7 @@ class LlamaCacheManager(Llama):
             print("Not using cached state")
             partial_prompt = prompt
             self.reset()
-            
+
         if to_eval:
             print("Evaluating partial prompt")
             prompt_tokens = self.get_prompt_tokens(partial_prompt)
@@ -119,7 +119,7 @@ class LlamaCacheManager(Llama):
             for output in outputs:
                 yield output
                 results += output["choices"][0]["text"]
-            
+
             self.current_state = prompt + results
 
         if self.flush_cache:
